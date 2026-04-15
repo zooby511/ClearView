@@ -1,0 +1,16 @@
+{
+  "name": "chrome-website-data-analyzer",
+  "version": "1.0.0",
+  "description": "Analyze what data websites collect from your browser — cookies, storage, fingerprinting, trackers, and more",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["privacy", "cookies", "fingerprinting", "tracker", "chrome", "analysis"],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0",
+    "puppeteer": "^23.0.0"
+  }
+}

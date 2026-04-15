@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chrome Website Data Analyzer — Privacy Audit Dashboard</title>
+  <meta name="description" content="Analyze what data websites collect from your browser. Detect cookies, trackers, fingerprinting, and more.">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+  <!-- Favicon (data URI for simplicity) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- ===== Header ===== -->
+    <header class="header">
+      <div class="header__logo">
+        <span class="header__icon">🔒</span>
+        <h1 class="header__title">Website Data Analyzer</h1>
+      </div>
+      <p class="header__subtitle">Discover what data websites collect from your browser</p>
+    </header>
+
+    <!-- ===== Search Bar ===== -->
+    <section class="search-section" id="search-section">
+      <div class="search-bar">
+        <input
+          type="text"
+          class="search-bar__input"
+          id="url-input"
+          placeholder="Enter a website URL (e.g., google.com)"
+          autocomplete="url"
+          spellcheck="false"
+          autofocus
+        >
+        <button class="search-bar__btn" id="scan-btn">
+          <span class="search-bar__btn-icon">🔍</span>
+          <span id="scan-btn-text">Scan Website</span>
+        </button>
+      </div>
+      <div class="search-options">
+        <label class="search-options__label" for="duration-select">Scan duration:</label>
+        <select class="search-options__select" id="duration-select">
+          <option value="5">5 seconds</option>
+          <option value="10" selected>10 seconds</option>
+          <option value="15">15 seconds</option>
+          <option value="20">20 seconds</option>
+          <option value="30">30 seconds</option>
+        </select>
+
+        <div class="search-options__divider"></div>
+
+        <label class="crawl-toggle">
+          <input type="checkbox" id="crawl-toggle" />
+          <span class="crawl-toggle__slider"></span>
+          <span class="crawl-toggle__label">🕷️ Deep Crawl</span>
+        </label>
+
+        <div class="crawl-options" id="crawl-options">
+          <label class="search-options__label" for="max-pages-select">Max pages:</label>
+          <select class="search-options__select" id="max-pages-select">
+            <option value="3">3 pages</option>
+            <option value="5">5 pages</option>
+            <option value="10" selected>10 pages</option>
+            <option value="15">15 pages</option>
+            <option value="20">20 pages</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Error Banner ===== -->
+    <div class="error-banner" id="error-banner">
+      <span>⚠️</span>
+      <span id="error-text"></span>
+    </div>
+
+    <!-- ===== Loading Overlay ===== -->
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Scanning website…</div>
+      <div class="loading-subtext">Monitoring cookies, trackers, fingerprinting attempts, and more</div>
+      <div class="loading-progress">
+        <div class="loading-step" id="step-launch">
+          <span class="loading-step__icon">○</span>
+          <span>Launching Chrome browser</span>
+        </div>
+        <div class="loading-step" id="step-navigate">
+          <span class="loading-step__icon">○</span>
+          <span>Navigating to website</span>
+        </div>
+        <div class="loading-step" id="step-wait">
+          <span class="loading-step__icon">○</span>
+          <span>Waiting for tracking scripts</span>
+        </div>
+        <div class="loading-step" id="step-analyze">
+          <span class="loading-step__icon">○</span>
+          <span>Analyzing collected data</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Crawl Progress Panel ===== -->
+    <div class="crawl-progress" id="crawl-progress">
+      <div class="crawl-progress__header">
+        <span>🕷️ Deep Crawl Progress</span>
+        <span class="crawl-progress__counter" id="crawl-counter">0 / 0 pages</span>
+      </div>
+      <div class="crawl-progress__bar">
+        <div class="crawl-progress__bar-fill" id="crawl-bar-fill"></div>
+      </div>
+      <div class="crawl-progress__current" id="crawl-current-url">Preparing...</div>
+      <div class="crawl-progress__pages" id="crawl-pages-list"></div>
+    </div>
+
+    <!-- ===== Welcome Section ===== -->
+    <section class="welcome-section" id="welcome-section">
+      <span class="welcome-section__icon">🛡️</span>
+      <h2 class="welcome-section__title">Privacy Audit Your Favorite Websites</h2>
+      <p class="welcome-section__text">
+        Enter any website URL above to discover what data it collects from your browser — including cookies, tracking scripts, browser fingerprinting, and permission requests.
+      </p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-card__icon">🍪</span>
+          <div class="feature-card__title">Cookie Analysis</div>
+          <div class="feature-card__desc">First-party vs third-party cookies, tracking cookies, expiry & flags</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-card__icon">👁️</span>
+          <div class="feature-card__title">Tracker Detection</div>
+          <div class="feature-card__desc">100+ known analytics, ad, and fingerprinting domains identified</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-card__icon">🔍</span>
+          <div class="feature-card__title">Fingerprinting</div>
+          <div class="feature-card__desc">Canvas, WebGL, Audio, Navigator, Screen API monitoring</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-card__icon">📡</span>
+          <div class="feature-card__title">Network Requests</div>
+          <div class="feature-card__desc">Every request logged, classified by domain and type</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-card__icon">💾</span>
+          <div class="feature-card__title">Storage Inspection</div>
+          <div class="feature-card__desc">localStorage, sessionStorage & IndexedDB contents revealed</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-card__icon">🔑</span>
+          <div class="feature-card__title">Permission Monitoring</div>
+          <div class="feature-card__desc">Geolocation, camera, microphone, notifications & more</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-card__icon">🧩</span>
+          <div class="feature-card__title">Extension Probing</div>
+          <div class="feature-card__desc">Detects when sites try to fingerprint your browser extensions</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-card__icon">👤</span>
+          <div class="feature-card__title">User Profiling</div>
+          <div class="feature-card__desc">Mouse tracking, keystroke logging, form monitoring & behavioral analysis</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Results ===== -->
+    <div class="results-container" id="results-container">
+
+      <!-- Crawl Summary (only shown in crawl mode) -->
+      <div class="crawl-summary" id="crawl-summary"></div>
+
+      <!-- Page Selector (only shown in crawl mode) -->
+      <div class="page-selector" id="page-selector"></div>
+
+      <!-- Scan Info Bar -->
+      <div class="scan-info">
+        <div class="scan-info__url" id="scan-info-url"></div>
+        <div class="scan-info__meta" id="scan-info-meta"></div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="summary-grid" id="summary-grid"></div>
+
+      <!-- Privacy Score -->
+      <div class="score-section" id="score-section"></div>
+
+      <!-- ===== Cookies Section ===== -->
+      <div class="section-panel" id="cookie-section">
+        <div class="section-panel__header">
+          <div class="section-panel__title">
+            <span class="section-panel__title-icon">🍪</span>
+            Cookies
+            <span class="section-panel__badge" id="cookie-badge">0</span>
+          </div>
+          <span class="section-panel__toggle">▼</span>
+        </div>
+        <div class="section-panel__body" id="cookie-body"></div>
+      </div>
+
+      <!-- ===== Network Section ===== -->
+      <div class="section-panel" id="network-section">
+        <div class="section-panel__header">
+          <div class="section-panel__title">
+            <span class="section-panel__title-icon">📡</span>
+            Network Requests & Trackers
+            <span class="section-panel__badge" id="network-badge">0</span>
+          </div>
+          <span class="section-panel__toggle">▼</span>
+        </div>
+        <div class="section-panel__body" id="network-body"></div>
+      </div>
+
+      <!-- ===== Fingerprinting Section ===== -->
+      <div class="section-panel" id="fingerprint-section">
+        <div class="section-panel__header">
+          <div class="section-panel__title">
+            <span class="section-panel__title-icon">🔍</span>
+            Browser Fingerprinting
+            <span class="section-panel__badge" id="fingerprint-badge">0</span>
+          </div>
+          <span class="section-panel__toggle">▼</span>
+        </div>
+        <div class="section-panel__body" id="fingerprint-body"></div>
+      </div>
+
+      <!-- ===== Storage Section ===== -->
+      <div class="section-panel" id="storage-section">
+        <div class="section-panel__header">
+          <div class="section-panel__title">
+            <span class="section-panel__title-icon">💾</span>
+            Web Storage
+            <span class="section-panel__badge" id="storage-badge">0</span>
+          </div>
+          <span class="section-panel__toggle">▼</span>
+        </div>
+        <div class="section-panel__body" id="storage-body"></div>
+      </div>
+
+      <!-- ===== Permissions Section ===== -->
+      <div class="section-panel" id="permission-section">
+        <div class="section-panel__header">
+          <div class="section-panel__title">
+            <span class="section-panel__title-icon">🔑</span>
+            Permission Requests
+            <span class="section-panel__badge" id="permission-badge">0</span>
+          </div>
+          <span class="section-panel__toggle">▼</span>
+        </div>
+        <div class="section-panel__body" id="permission-body"></div>
+      </div>
+
+      <!-- ===== Extension Probing Section ===== -->
+      <div class="section-panel" id="extension-section">
+        <div class="section-panel__header">
+          <div class="section-panel__title">
+            <span class="section-panel__title-icon">🧩</span>
+            Extension Fingerprinting
+            <span class="section-panel__badge" id="extension-badge">0</span>
+          </div>
+          <span class="section-panel__toggle">▼</span>
+        </div>
+        <div class="section-panel__body" id="extension-body"></div>
+      </div>
+
+      <!-- ===== User Profiling Section ===== -->
+      <div class="section-panel" id="profiling-section">
+        <div class="section-panel__header">
+          <div class="section-panel__title">
+            <span class="section-panel__title-icon">👤</span>
+            User Profiling & Behavioral Tracking
+            <span class="section-panel__badge" id="profiling-badge">0</span>
+          </div>
+          <span class="section-panel__toggle">▼</span>
+        </div>
+        <div class="section-panel__body" id="profiling-body"></div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>🔒 Chrome Website Data Analyzer — Built for privacy transparency</p>
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/components.js"></script>
+  <script src="/js/charts.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
