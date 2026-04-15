@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Analyzer</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 320px;
+      background: #0a0e1a;
+      color: #fff;
+    }
+    .header {
+      background: #111827;
+      border-bottom: 1px solid #1e293b;
+      padding: 16px;
+      text-align: center;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .header .url {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 6px;
+      word-break: break-all;
+    }
+    .content {
+      padding: 16px;
+    }
+    .hero-stat {
+      background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(220,38,38,0.05));
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .hero-stat .label {
+      font-size: 12px;
+      color: #fca5a5;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .hero-stat .value {
+      font-size: 36px;
+      font-weight: 800;
+      color: #fff;
+      margin: 8px 0;
+      text-shadow: 0 2px 10px rgba(239,68,68,0.4);
+    }
+    .hero-stat .desc {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .card .icon {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .card .label {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>🔒 Privacy Analyzer</h2>
+    <div class="url" id="page-url">Analyzing current page...</div>
+  </div>
+  
+  <div class="content" id="main-content" style="display: none;">
+    <div class="hero-stat" id="hero-stat">
+      <div class="label" id="hero-label">Highest Risk Metric</div>
+      <div class="value" id="hero-value">0</div>
+      <div class="desc" id="hero-desc">highest footprint item</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="icon">🍪</div>
+        <div class="value" id="stat-cookies">0</div>
+        <div class="label">Total Cookies</div>
+      </div>
+      <div class="card">
+        <div class="icon">👁️</div>
+        <div class="value" id="stat-trackers">0</div>
+        <div class="label">Tracker Domains</div>
+      </div>
+      <div class="card">
+        <div class="icon">🔍</div>
+        <div class="value" id="stat-fingerprint">0</div>
+        <div class="label">Fingerprint APIs</div>
+      </div>
+      <div class="card">
+        <div class="icon">💾</div>
+        <div class="value" id="stat-storage">0</div>
+        <div class="label">Storage Items</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading" id="loading-content">
+    Gathering site data...
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

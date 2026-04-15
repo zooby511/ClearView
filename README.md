@@ -99,7 +99,25 @@ This installs:
 - **express** — web server for the dashboard and API
 - **puppeteer** — headless Chrome for scanning (automatically downloads Chromium)
 
-### Running the Server
+### 🚀 Chrome Extension Mode (New!)
+
+This tool has been ported into a fully native Chrome Extension (Manifest V3) to scan websites securely directly from your browser. 
+Deep Crawl is disabled in the extension mode, but all active tab analysis runs instantly.
+
+**Installation from Source:**
+1. Open Google Chrome and navigate to `chrome://extensions/`
+2. Enable **Developer mode** using the toggle switch in the top right corner.
+3. Click the **Load unpacked** button.
+4. Select the `extension/` directory from this repository.
+5. Pin the 🔒 Data Analyzer extension to your toolbar.
+
+**Usage:**
+1. Navigate to any website.
+2. Click the extension icon.
+3. Click **Scan Current Tab**.
+4. The extension will open a new tab with the dashboard report.
+
+### 💻 Node.js Server Mode (Legacy)
 
 ```bash
 # Start the server
